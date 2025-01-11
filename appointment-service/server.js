@@ -16,5 +16,10 @@ mongoose
 // Routes
 app.use('/appointments', require('./routes/appointments'));
 
+app.get('/health', (req, res) => {
+    res.status(200).send('Appointment Service is healthy!');
+});
+
+
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`Appointment Service running on port ${PORT}`));
