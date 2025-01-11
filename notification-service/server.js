@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const startConsumer = require('./queue/consumer');
 
-dotenv.config();
+dotenv.config()
 
 const app = express();
 
