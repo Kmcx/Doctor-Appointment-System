@@ -88,11 +88,46 @@ const DoctorProfile = () => {
 
     if (!doctor) return <p>Loading doctor details...</p>;
 
+    const hours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+    const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
     return (
         <div className="container mt-5">
             <h2>{doctor.name} (⭐ {averageRating})</h2>
             <p>Specialization: {doctor.specialization}</p>
             <p>City: {doctor.address.city}</p>
+
+            <h3>Available Time Slots</h3>
+            <table className="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        {hours.map(hour => (
+                            <th key={hour}>{hour}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {days.map(day => (
+                        <tr key={day}>
+                            <td>{day}</td>
+                            {hours.map(hour => (
+                                <td key={hour} className="text-center">
+                                    <input
+                                        type="radio"
+                                        name="appointment-time"
+                                        disabled={!doctor.availability.some(a => a.day === day && a.slots.includes(hour))}
+                                        onChange={() => handleTimeSelect(day, hour)}
+                                    />
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <button className="btn btn-primary" onClick={handleAppointment} disabled={!selectedTime}>
+                Make Appointment
+            </button>
 
             <h3>Comments & Reviews</h3>
             <ul className="list-group">
