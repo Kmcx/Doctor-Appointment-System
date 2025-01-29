@@ -1,30 +1,31 @@
 const amqp = require('amqplib');
-const sendEmail = require('../email/emailSender');
+const sendEmail = require('../email/emailSender'); // Email gönderici modül
 
 const QUEUE_NAME = 'notificationQueue';
 
 const startConsumer = async () => {
     try {
-        const connection = await amqp.connect(process.env.RABBITMQ_URL);
+        const connection = await amqp.connect(process.env.RABBITMQ_URL); // RabbitMQ bağlantısı
         const channel = await connection.createChannel();
         await channel.assertQueue(QUEUE_NAME, { durable: true });
-        console.log(`Waiting for messages in queue "${QUEUE_NAME}"...`);
 
+        console.log(`Waiting for messages in queue: ${QUEUE_NAME}...`);
+
+        // Kuyruktaki mesajları tüket
         channel.consume(QUEUE_NAME, async (msg) => {
             if (msg !== null) {
-                const message = JSON.parse(msg.content.toString());
-                console.log('Received message:', message);
+                const notification = JSON.parse(msg.content.toString());
+                console.log('Processing notification:', notification);
 
-                // Send an email notification
-                const { email, subject, text } = message;
-                await sendEmail(email, subject, text);
+                // E-posta gönder
+                await sendEmail(notification.email, notification.subject, notification.text);
 
-                // Acknowledge the message
+                // Mesajı işlenmiş olarak işaretle
                 channel.ack(msg);
             }
         });
     } catch (err) {
-        console.error('Error in RabbitMQ Consumer:', err.message);
+        console.error('Error in RabbitMQ consumer:', err.message);
     }
 };
 
