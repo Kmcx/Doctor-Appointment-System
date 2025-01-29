@@ -1,0 +1,68 @@
+/* Genel Stil */
+body {
+    background-color: #E3F2FD; /* Açık Mavi */
+    font-family: 'Arial', sans-serif;
+}
+
+/* Sayfa Başlığı */
+.header {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #01579B;
+    margin-bottom: 20px;
+}
+
+/* Ana Konteyner */
+.container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Harita Çerçevesi */
+.map-container {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Doktor Listesi */
+.list-group-item {
+    border-left: 5px solid #0288D1;
+    transition: transform 0.2s;
+}
+
+.list-group-item:hover {
+    transform: scale(1.02);
+    background-color: #E1F5FE;
+}
+
+/* Butonlar */
+button {
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+
+.btn-primary {
+    background-color: #0288D1;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #01579B;
+}
+
+.btn-danger {
+    background-color: #D32F2F;
+    border: none;
+    transition: background 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #B71C1C;
+}

@@ -1,111 +1,122 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import GoogleLogin from "../components/GoogleLogin";
 
 function DoctorRegister() {
     const navigate = useNavigate();
     const [userType, setUserType] = useState("doctor");
-    const [isLogin, setIsLogin] = useState(false);
     const [user, setUser] = useState({
         name: "",
         email: "",
-    });
-
-    const [doctor, setDoctor] = useState({
         specialization: "",
+        availability: [
+            { day: "Monday", slots: [] },
+            { day: "Tuesday", slots: [] },
+            { day: "Wednesday", slots: [] },
+            { day: "Thursday", slots: [] },
+            { day: "Friday", slots: [] }
+        ],
         address: {
             line1: "",
             city: "",
             postalCode: "",
+            geoLocation: { lat: 0, lng: 0 },
         },
-        availability: [],
     });
 
-    const handleUserChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("name") && params.has("email")) {
+            setUser((prevUser) => ({
+                ...prevUser,
+                name: params.get("name"),
+                email: params.get("email"),
+            }));
+            window.history.replaceState(null, "", window.location.pathname);
+        }
+    }, []);
+
+    const handleGoogleLogin = () => {
+        const authWindow = window.open(
+            "http://localhost:5000/auth/google?userType=doctor",
+            "_blank",
+            "width=500,height=600"
+        );
+        
+        const checkPopup = setInterval(() => {
+            if (!authWindow || authWindow.closed) {
+                clearInterval(checkPopup);
+                window.location.reload();
+            }
+        }, 1000);
     };
 
-    const handleDoctorChange = (e) => {
-        if (["line1", "city", "postalCode"].includes(e.target.name)) {
-            setDoctor((prevState) => ({
+    const handleAvailabilityChange = (day, slot) => {
+        setUser((prevState) => {
+            const updatedAvailability = prevState.availability.map((entry) =>
+                entry.day === day
+                    ? {
+                        ...entry,
+                        slots: entry.slots.includes(slot)
+                            ? entry.slots.filter((s) => s !== slot)
+                            : [...entry.slots, slot],
+                    }
+                    : entry
+            );
+            return { ...prevState, availability: updatedAvailability };
+        });
+    };
+
+    const handleUserChange = (e) => {
+        const { name, value } = e.target;
+        if (["line1", "city", "postalCode"].includes(name)) {
+            setUser((prevState) => ({
                 ...prevState,
                 address: {
                     ...prevState.address,
-                    [e.target.name]: e.target.value,
+                    [name]: value,
                 },
             }));
         } else {
-            setDoctor({ ...doctor, [e.target.name]: e.target.value });
+            setUser({ ...user, [name]: value });
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const payload = userType === "doctor" ? { ...user, ...doctor } : user;
-
         try {
             const response = await fetch(`http://localhost:5002/api/${userType}s/register`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user),
             });
-
-            if (!response.ok) {
-                throw new Error("Registration failed!");
-            }
-
+    
             const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.error || `${userType} registration failed!`);
+            }
+    
             alert(`${userType} registered successfully!`);
-            
+    
             if (userType === "patient") {
-                localStorage.setItem("patientId", data.patient._id); // Hasta ID'sini kaydet
+                localStorage.setItem("patientId", data.patient._id);
                 localStorage.setItem("patientEmail", data.patient.email);
+            } else {
+                localStorage.setItem("doctorId", data.doctor._id);
+                localStorage.setItem("doctorEmail", data.doctor.email);
             }
-            
-            navigate("/"); // Kayıt sonrası anasayfaya yönlendir
+    
+            navigate("/");
         } catch (error) {
             console.error("Error:", error.message);
-            alert("Failed to register. Please try again.");
+            alert(`Failed to register ${userType}. Please try again.`);
         }
     };
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await fetch(`http://localhost:5002/api/${userType}s/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email: user.email }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "Login failed!");
-            }
-
-            alert(`${userType} logged in successfully!`);
-            
-            if (userType === "patient") {
-                localStorage.setItem("patientId", data.patient._id); // Hasta ID'sini kaydet
-                localStorage.setItem("patientEmail", data.patient.email);
-            }
-            
-            navigate("/"); // Giriş sonrası anasayfaya yönlendir
-        } catch (error) {
-            console.error("Error:", error.message);
-            alert("Login failed. Please check your email and try again.");
-        }
-    };
+    
 
     return (
         <div className="container mt-5">
-            <h2>{isLogin ? "Login" : `Register as a ${userType === "doctor" ? "Doctor" : "Patient"}`}</h2>
+            <h2>Register as a {userType === "doctor" ? "Doctor" : "Patient"}</h2>
 
             <div className="mb-3">
                 <label>User Type</label>
@@ -115,51 +126,62 @@ function DoctorRegister() {
                 </select>
             </div>
 
-            <form onSubmit={isLogin ? handleLogin : handleSubmit}>
-                {!isLogin && (
-                    <div className="mb-3">
-                        <label>Full Name</label>
-                        <input type="text" name="name" className="form-control" onChange={handleUserChange} required />
-                    </div>
-                )}
-
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label>Full Name</label>
+                    <input type="text" name="name" className="form-control" onChange={handleUserChange} required />
+                </div>
+                
                 <div className="mb-3">
                     <label>Email</label>
                     <input type="email" name="email" className="form-control" onChange={handleUserChange} required />
                 </div>
-
-                {!isLogin && userType === "doctor" && (
+                
+                {userType === "doctor" && (
                     <>
                         <div className="mb-3">
                             <label>Specialization</label>
-                            <input type="text" name="specialization" className="form-control" onChange={handleDoctorChange} required />
+                            <input type="text" name="specialization" className="form-control" onChange={handleUserChange} required />
                         </div>
-
                         <div className="mb-3">
-                            <label>Address Line 1</label>
-                            <input type="text" name="line1" className="form-control" onChange={handleDoctorChange} required />
-                        </div>
-
-                        <div className="mb-3">
-                            <label>City</label>
-                            <select name="city" className="form-select" onChange={handleDoctorChange} required>
+                            <label>Address</label>
+                            <input type="text" name="line1" className="form-control" onChange={handleUserChange} required />
+                            <select name="city" className="form-select mt-2" onChange={handleUserChange} required>
                                 <option value="">Select City</option>
                                 <option value="Istanbul">Istanbul</option>
                                 <option value="Ankara">Ankara</option>
                                 <option value="Izmir">Izmir</option>
                             </select>
+                            <input type="text" name="postalCode" className="form-control mt-2" onChange={handleUserChange} required />
                         </div>
+                        <h4>Availability</h4>
+                        {user.availability.map(({ day, slots }) => (
+                            <div key={day}>
+                                <strong>{day}</strong>
+                                {["08:00", "10:00", "12:00", "14:00", "16:00"].map((slot) => (
+                                    <label key={slot} className="ms-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={slots.includes(slot)}
+                                            onChange={() => handleAvailabilityChange(day, slot)}
+                                        />
+                                        {slot}
+                                    </label>
+                                ))}
+                            </div>
+                        ))}
                     </>
                 )}
-
-                <button type="submit" className="btn btn-primary">
-                    {isLogin ? "Login" : "Register"}
-                </button>
+                
+                <button type="submit" className="btn btn-primary">Register</button>
             </form>
 
-            <button className="btn btn-secondary mt-3" onClick={() => setIsLogin(!isLogin)}>
-                {isLogin ? "Go to Register" : "Go to Login"}
-            </button>
+            {userType === "doctor" && (
+                <div className="mt-3">
+                    <h4>Or Register/Login with Google</h4>
+                    <button className="btn btn-outline-primary" onClick={handleGoogleLogin}>Login with Google</button>
+                </div>
+            )}
 
             <button className="btn btn-secondary mt-3" onClick={() => navigate("/")}>Back to Home</button>
         </div>

@@ -8,13 +8,12 @@ dotenv.config();
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.env.GOOGLE_CLIENT_ID, // Google Client ID
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Google Client Secret
-            callbackURL: "http://localhost:5000/auth/google/callback", // Geri dönüş URL'si
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: "http://localhost:5000/auth/google/callback",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                // Kullanıcı bilgilerini al
                 const user = {
                     googleId: profile.id,
                     name: profile.displayName,
@@ -26,25 +25,31 @@ passport.use(
                 const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
                 user.token = token;
 
-                return done(null, user); // Kullanıcıyı döndür
+                return done(null, user);
             } catch (error) {
-                return done(error, null); // Hata durumunda null döndür
+                return done(error, null);
             }
         }
     )
 );
 
 passport.serializeUser((user, done) => {
-    done(null, user.googleId); // Sadece Google ID'yi saklayalım
+    done(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-    // Burada kullanıcıyı DB'den çekebilirsiniz; şimdilik mock bir kullanıcı döndürelim
-    const mockUser = {
-        googleId: id,
-        name: 'Mock User',
-        email: 'mockuser@gmail.com',
-        avatar: 'https://path-to-avatar.jpg',
-    };
-    done(null, mockUser); // Kullanıcıyı `req.user` içine ekler
+passport.deserializeUser((user, done) => {
+    done(null, user);
 });
+
+const express = require('express');
+const router = express.Router();
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
+    // Kullanıcı başarıyla giriş yaptı, bilgileriyle HomePage'e yönlendirelim
+    const { name, email, avatar } = req.user;
+    res.redirect(`http://localhost:3000/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&avatar=${encodeURIComponent(avatar)}`);
+});
+
+module.exports = router;

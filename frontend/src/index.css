@@ -11,3 +11,77 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+/* Genel Arka Plan */
+body {
+  background-color: #E0F7FA; /* Hafif Turkuaz */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Ana Konteyner */
+.container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Başlık Stili */
+h2 {
+  color: #00796B;
+}
+
+/* Arama Kutusu */
+input.form-control {
+  border: 2px solid #4DB6AC;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+input.form-control:focus {
+  border-color: #00796B;
+  box-shadow: 0 0 5px #4DB6AC;
+}
+
+/* Arama Butonu */
+button.btn-primary {
+  background-color: #00796B;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  transition: background 0.3s ease;
+}
+
+button.btn-primary:hover {
+  background-color: #004D40;
+}
+
+/* Harita Bölümü */
+.map-container {
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Doktor Listesi */
+.list-group-item {
+  border-left: 5px solid #00796B;
+  transition: transform 0.2s;
+}
+
+.list-group-item:hover {
+  transform: scale(1.02);
+  background-color: #E0F2F1;
+}
+
+/* Çıkış Butonu */
+button.btn-danger {
+  background-color: #D32F2F;
+  border: none;
+  border-radius: 10px;
+}
+
+button.btn-danger:hover {
+  background-color: #B71C1C;
+}
