@@ -90,11 +90,11 @@ APPOINTMENT_SERVICE_URL=http://localhost:5002
 NOTIFICATION_SERVICE_URL=http://localhost:5003
 
 # MongoDB Database
-MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/
+MONGO_URI= - 
 
 # Google Authentication
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_CLIENT_ID= - 
+GOOGLE_CLIENT_SECRET= - 
 
 # Redis and RabbitMQ
 REDIS_URL=redis://localhost:6379
