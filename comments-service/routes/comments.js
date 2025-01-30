@@ -5,7 +5,7 @@ const sendMessage = require('../queue/producer');
 
 const router = express.Router();
 
-// CORS İzinlerini Aç
+// CORS
 router.use(cors());
 
 // Add a comment
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
         await newComment.save();
 
         const notification = {
-            email: 'kutaycetiner@gmail.com', // Dinamik hale getirebiliriz
+            email: 'kutaycetiner@gmail.com', 
             subject: 'New Review Received',
             text: `You received a new review: "${comment}"`,
         };
@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Get comments for a doctor
+
 router.get('/:doctorId', async (req, res) => {
     try {
         if (!req.params.doctorId) {
@@ -39,7 +39,7 @@ router.get('/:doctorId', async (req, res) => {
 
         const comments = await Comment.find({ doctorId: req.params.doctorId });
         
-        // CORS başlığı ekleyelim
+        // CORS 
         res.header("Access-Control-Allow-Origin", "*");
         res.status(200).json(comments);
     } catch (err) {

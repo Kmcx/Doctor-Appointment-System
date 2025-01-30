@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
 
-// JSON desteği ekle
+
 app.use(express.json());
 
-// Routes klasöründen testRoutes'u içe aktar ve kullan
+
 app.use('/', require('./routes/testRoutes'));
 
 // 404 fallback

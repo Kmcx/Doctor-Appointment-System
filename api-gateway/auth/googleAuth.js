@@ -21,7 +21,7 @@ passport.use(
                     avatar: profile.photos[0].value,
                 };
 
-                // Kullanıcı için JWT token oluştur
+                // JWT token 
                 const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
                 user.token = token;
 
@@ -47,7 +47,7 @@ const router = express.Router();
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
-    // Kullanıcı başarıyla giriş yaptı, bilgileriyle HomePage'e yönlendirelim
+    
     const { name, email, avatar } = req.user;
     res.redirect(`http://localhost:3000/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&avatar=${encodeURIComponent(avatar)}`);
 });

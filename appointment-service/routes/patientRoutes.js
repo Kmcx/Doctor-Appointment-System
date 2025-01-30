@@ -3,7 +3,7 @@ const Patient = require("../models/Patient");
 
 const router = express.Router();
 
-// Hasta Kaydı
+
 router.post("/register", async (req, res) => {
     const { name, email } = req.body;
 

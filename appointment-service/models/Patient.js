@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const PatientSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Hasta adı
-    email: { type: String, required: true, unique: true }, // E-posta (unique olacak)
-    createdAt: { type: Date, default: Date.now } // Kayıt tarihi
+    name: { type: String, required: true }, 
+    email: { type: String, required: true, unique: true }, 
+    createdAt: { type: Date, default: Date.now } 
 });
 
 module.exports = mongoose.model("Patient", PatientSchema);

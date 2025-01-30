@@ -10,8 +10,8 @@ const DoctorProfile = () => {
     const [newComment, setNewComment] = useState("");
     const [newRating, setNewRating] = useState(5);
     const [averageRating, setAverageRating] = useState(0);
-    const patientId = localStorage.getItem("patientId"); // Hasta ID'sini al
-    const patientEmail = localStorage.getItem("patientEmail"); // Hasta email'ini al
+    const patientId = localStorage.getItem("patientId"); 
+    const patientEmail = localStorage.getItem("patientEmail"); 
 
     useEffect(() => {
         fetch(`http://localhost:5002/api/doctors/${id}`)

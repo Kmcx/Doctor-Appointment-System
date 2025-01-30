@@ -1,17 +1,17 @@
 const redis = require('redis');
 
-// Redis client oluştur
+// Redis client 
 const client = redis.createClient({
     socket: {
-        host: '127.0.0.1', // Redis sunucu adresi (localhost varsayılan)
-        port: 6379,        // Redis portu (varsayılan 6379)
+        host: '127.0.0.1', 
+        port: 6379,        // Redis port
     },
 });
 
 client.on('error', (err) => console.error('Redis connection error:', err));
 client.on('connect', () => console.log('Connected to Redis'));
 
-// Redis bağlantısını başlat
+// start Redis 
 (async () => {
     try {
         await client.connect();

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
-    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true }, // Doktor ID'si
-    patientId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Hasta ID'si
-    date: { type: String, required: true }, // Randevu tarihi
-    time: { type: String, required: true }, // Randevu saati
-    status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' }, // Randevu durumu
+    doctorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor', required: true }, // Doktor ID
+    patientId: { type: mongoose.Schema.Types.ObjectId, required: true }, // Hasta ID
+    date: { type: String, required: true }, 
+    time: { type: String, required: true }, 
+    status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' }, 
     createdAt: { type: Date, default: Date.now },
 });
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const cors = require('cors'); // CORS ekliyoruz
+const cors = require('cors'); // CORS 
 const amqp = require('amqplib');
 dotenv.config();
 
@@ -9,7 +9,7 @@ const commentsRoutes = require('./routes/comments');
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // CORS Middleware ekledik
+app.use(cors()); // CORS Middleware 
 
 // MongoDB connection
 mongoose

@@ -47,9 +47,9 @@ module.exports = (app) => {
     );
 
     app.use(
-        '/test-service', // Gateway rotası
+        '/test-service', // Gateway 
         createProxyMiddleware({
-            target: 'http://localhost:5005', // Test Service URL'si
+            target: 'http://localhost:5005', // Test Service URL
             changeOrigin: true,
             onProxyReq: (proxyReq, req, res) => {
                 console.log(`[Gateway] Forwarding request to Test Service: ${req.method} ${proxyReq.path}`);

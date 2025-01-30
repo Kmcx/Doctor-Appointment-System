@@ -6,7 +6,7 @@ const router = express.Router();
 router.get(
     '/google',
     passport.authenticate('google', {
-        scope: ['profile', 'email'], // Google'dan erişim istenen veri
+        scope: ['profile', 'email'], 
     })
 );
 
@@ -15,8 +15,8 @@ router.get(
     '/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
-        console.log('Session Data:', req.session); // Oturum bilgilerini kontrol et
-        console.log('User Data:', req.user); // Kullanıcı verisini kontrol et
+        console.log('Session Data:', req.session); 
+        console.log('User Data:', req.user); 
 
         res.json({ message: 'Login successful', user: req.user });
     }

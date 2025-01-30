@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const DoctorSchema = new mongoose.Schema({
-    name: { type: String, required: true }, // Doktor adı
-    specialization: { type: String, required: true }, // Uzmanlık alanı
+    name: { type: String, required: true }, // Doktor name
+    specialization: { type: String, required: true }, 
     email: { type: String, required: true, unique: true }, 
     availability: [
         {
-            day: { type: String, required: true }, // Müsaitlik günü
-            slots: [String], // Saat aralıkları
+            day: { type: String, required: true }, 
+            slots: [String], 
         },
     ],
     address: {
@@ -19,7 +19,7 @@ const DoctorSchema = new mongoose.Schema({
             lng: { type: Number }, // Longitude
         },
     },
-    isApproved: { type: Boolean, default: false }, // Yönetici onayı
+    isApproved: { type: Boolean, default: false }, // is approved
     createdAt: { type: Date, default: Date.now },
 });
 

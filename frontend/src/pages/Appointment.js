@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 function Appointment() {
-    const { id } = useParams(); // Seçilen doktorun ID'si
+    const { id } = useParams(); 
     const [doctor, setDoctor] = useState(null);
     const [selectedDay, setSelectedDay] = useState("");
     const [selectedTime, setSelectedTime] = useState("");
@@ -17,7 +17,7 @@ function Appointment() {
             return;
         }
 
-        // Seçilen doktorun bilgilerini API'den çek
+       
         fetch(`http://localhost:5002/api/doctors/${id}`)
             .then((response) => {
                 if (!response.ok) {
@@ -36,17 +36,17 @@ function Appointment() {
             });
     }, [id]);
 
-    // Gün seçildiğinde saatleri filtrele
+    
     const handleDayChange = (day) => {
         setSelectedDay(day);
         const dayAvailability = doctor?.availability?.find((item) => item.day === day);
         setAvailableTimes(dayAvailability ? dayAvailability.slots : []);
-        setSelectedTime(""); // Önceki saat seçimini temizle
+        setSelectedTime(""); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const patientId = localStorage.getItem("userId"); // Kullanıcı giriş yaptıysa
+        const patientId = localStorage.getItem("userId"); 
 
         try {
             const response = await fetch("http://localhost:5002/api/appointments", {
@@ -68,7 +68,7 @@ function Appointment() {
             }
 
             alert("Appointment successfully booked!");
-            navigate(`/doctor/${id}`); // Başarıyla tamamlanınca doktora geri yönlendir
+            navigate(`/doctor/${id}`); 
         } catch (error) {
             console.error("Error booking appointment:", error);
             alert("Failed to book appointment. Please try again.");
