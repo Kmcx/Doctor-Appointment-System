@@ -5,12 +5,13 @@ const session = require('express-session');
 const passport = require('passport');
 require('./auth/googleAuth'); // Google OAuth Middleware
 const authRoutes = require('./routes/authRoutes');
-
-
+const cors = require('cors');
+const gatewayRoutes = require('./routes/gatewayRoutes');
 
 dotenv.config({ path: path.resolve(__dirname, './.env') });
 
 const app = express();
+app.use(cors());
 
 // Load gateway routes
 require('./routes/gatewayRoutes')(app);
@@ -26,17 +27,18 @@ app.get('/', (req, res) => {
 app.use(
     session({
         secret: process.env.SESSION_SECRET || 'your-session-secret', 
-        resave: false, // Oturumu her istekte yeniden kaydetme
-        saveUninitialized: true, // Boş oturumları kaydet
+        resave: false, 
+        saveUninitialized: true, 
         cookie: {
-            maxAge: 1000 * 60 * 60, // 1 saatlik oturum süresi
-            secure: false, // HTTPS olmayan bağlantılar için false olmalı (yerel geliştirme)
+            maxAge: 1000 * 60 * 60, 
+            secure: false, 
         },
     })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
+gatewayRoutes(app);
 app.use('/auth', authRoutes);
 
 

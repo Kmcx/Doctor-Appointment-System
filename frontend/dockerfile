@@ -1,0 +1,24 @@
+# Base image
+FROM node:18
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the frontend
+RUN npm run build
+
+# Install and setup a lightweight web server (serve)
+RUN npm install -g serve
+
+# Expose the port for React frontend
+EXPOSE 3000
+
+# Start the frontend
+CMD ["serve", "-s", "build", "-l", "3000"]

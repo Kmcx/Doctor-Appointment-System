@@ -2,6 +2,7 @@
 node_modules
 
 test
+test-service
 =======
 # Logs
 logs
